@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="he">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Recipe - Cookbook</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="toolbar">
+    <h1 id="recipe-title" style="font-size:1.5rem;margin:0">Recipe</h1>
+    <nav>
+      <a href="settings.html" class="link" style="margin-left:12px;font-size:1.5rem">⚙️</a>
+      <a href="recipes.html" class="link">Back</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div style="text-align:center;margin-bottom:2rem">
+      <img id="recipe-image" class="recipe-hero-large hidden" alt="" style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1)" />
+      <div class="muted" id="recipe-meta" style="margin-top:1rem">—</div>
+    </div>
+    <section class="card">
+      <h3>Ingredients</h3>
+      <ul id="ingredients-list" style="margin-top:12px"></ul>
+    </section>
+
+    <section class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>Instructions</h3>
+        <div class="muted">Follow the steps — use voice reader below</div>
+      </div>
+
+      <ol id="steps-list" style="margin-top:12px"></ol>
+    </section>
+
+    <section class="card controls">
+      <h3>Voice Reader</h3>
+      <div class="row" style="margin-top:8px">
+        <button id="start-reading" class="btn" type="button">Start</button>
+        <button id="pause-reading" class="btn secondary" type="button">Pause</button>
+        <button id="resume-reading" class="btn secondary" type="button">Resume</button>
+        <button id="stop-reading" class="btn danger" type="button">Stop</button>
+      </div>
+      <p id="reader-status" class="muted" style="margin-top:10px">Ready</p>
+      <p class="muted" style="margin-top:6px;font-size:13px">Shortcuts: Space = Pause/Resume · R = Start · S = Stop</p>
+    </section>
+  </main>
+
+  <script src="js/data-manager.js" defer></script>
+  <script src="js/speech-reader.js" defer></script>
+  <script src="js/recipe-view-app.js" defer></script>
+  <script>
+    const user = JSON.parse(localStorage.getItem('rv_current_user_v1'));
+    if(user && user.settings && user.settings.theme === 'dark'){
+      document.body.classList.add('dark-mode');
+    }
+  </script>
+</body>
+</html>

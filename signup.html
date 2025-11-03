@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>הרשמה</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Rubik,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f5f5;
+padding:1rem}
+.card{background:rgba(255,255,255,.95);border-radius:20px;padding:2.5rem;max-width:450px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.header{text-align:center;margin-bottom:2rem}
+.header h1{font-size:4rem;margin:0}
+.header h2{font-size:1.8rem;margin:1rem 0 .5rem;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+form{display:flex;flex-direction:column;gap:1.2rem}
+.group{display:flex;flex-direction:column;gap:.4rem}
+label{font-weight:600;font-size:.9rem;color:#1e293b}
+input{padding:.9rem 1.1rem;border:2px solid #e2e8f0;border-radius:12px;font-size:1rem;width:100%}
+input:focus{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.15);outline:0}
+.btn{width:100%;padding:1rem;font-size:1.1rem;font-weight:700;border-radius:12px;background:linear-gradient(135deg,#667eea,#764ba2);border:0;color:#fff;cursor:pointer}
+.footer{text-align:center;margin-top:1.5rem;padding-top:1.5rem;border-top:2px solid rgba(0,0,0,.08)}
+.footer a{color:#667eea;font-weight:600;text-decoration:none}
+.error{background:rgba(239,68,68,.1);padding:.7rem;border-radius:8px;color:#ef4444;display:none}
+.success{background:rgba(16,185,129,.1);padding:.7rem;border-radius:8px;color:#10b981;font-weight:600;display:none}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="header">
+<h2>הרשמה</h2>
+<p>הצטרף אלינו</p>
+</div>
+<form id="signup-form">
+<div class="group">
+<label>שם משתמש</label>
+<input id="su-username" type="text" required>
+</div>
+<div class="group">
+<label>סיסמה</label>
+<input id="su-password" type="password" required>
+</div>
+<div class="group">
+<label>אימות סיסמה</label>
+<input id="su-password2" type="password" required>
+</div>
+<button class="btn" type="submit">צור חשבון</button>
+<p id="signup-error" class="error"></p>
+<p id="signup-msg" class="success"></p>
+</form>
+<div class="footer">
+<p>כבר יש לך חשבון? <a href="login.html">התחבר</a></p>
+</div>
+</div>
+<script>
+document.getElementById("signup-form").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const username = document.getElementById("su-username").value.trim();
+  const password = document.getElementById("su-password").value;
+  const password2 = document.getElementById("su-password2").value;
+  const err = document.getElementById("signup-error");
+  const msg = document.getElementById("signup-msg");
+  err.textContent = "";
+  err.style.display = 'none';
+  msg.style.display = 'none';
+  
+  if(!username || !password){
+    err.textContent = "שם משתמש וסיסמה הם שדות חובה";
+    err.style.display = 'block';
+    return;
+  }
+  if(password !== password2){
+    err.textContent = "הסיסמאות לא זהות";
+    err.style.display = 'block';
+    return;
+  }
+  
+  const users = JSON.parse(localStorage.getItem('rv_users_v1') || '[]');
+  if(users.some(u => u.username === username)){
+    err.textContent = "שם המשתמש כבר קיים";
+    err.style.display = 'block';
+    return;
+  }
+  
+  const id = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
+  const newUser = {id, username, password, settings: {delayTime: 900, theme: "light"}};
+  users.push(newUser);
+  localStorage.setItem('rv_users_v1', JSON.stringify(users));
+  localStorage.setItem('rv_current_user_v1', JSON.stringify(newUser));
+  
+  msg.textContent = "החשבון נוצר בהצלחה! מעביר...";
+  msg.style.display = 'block';
+  setTimeout(()=> location.href = "recipes.html", 600);
+});
+</script>
+
+</body>
+</html>

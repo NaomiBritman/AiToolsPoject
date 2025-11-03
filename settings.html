@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>הגדרות</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Rubik,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f5f5;padding:1rem}
+.card{background:#fff;border-radius:16px;padding:3rem;max-width:420px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid #e0e0e0}
+.header{text-align:center;margin-bottom:2.5rem}
+.header h1{font-size:3.5rem;margin:0}
+.header h2{font-size:1.6rem;margin:1rem 0 0.5rem;font-weight:600;color:#333}
+.header p{color:#666;font-size:0.95rem}
+form{display:flex;flex-direction:column;gap:1.3rem}
+.group{display:flex;flex-direction:column;gap:0.5rem}
+label{font-weight:600;font-size:0.9rem;color:#333}
+input,select{padding:0.85rem 1rem;border:2px solid #ddd;border-radius:10px;font-size:1rem;width:100%;transition:all 0.2s}
+input:focus,select:focus{border-color:#4a90e2;box-shadow:0 0 0 3px rgba(74,144,226,0.1);outline:0}
+.btn{width:100%;padding:1rem;font-size:1.05rem;font-weight:600;border-radius:10px;background:#4a90e2;border:0;color:#fff;cursor:pointer;transition:all 0.2s;margin-top:0.5rem}
+.btn:hover{background:#357abd;transform:translateY(-1px);box-shadow:0 4px 12px rgba(74,144,226,0.3)}
+.footer{text-align:center;margin-top:2rem;padding-top:2rem;border-top:1px solid #e0e0e0}
+.footer a{color:#4a90e2;font-weight:600;text-decoration:none}
+.footer a:hover{text-decoration:underline}
+.success{background:#efe;padding:0.8rem;border-radius:8px;color:#3a3;border:1px solid #cfc;font-weight:600;font-size:0.9rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="header">
+<h1>⚙️</h1>
+<h2>הגדרות</h2>
+<p>ערוך את ההעדפות שלך</p>
+</div>
+<form id="settings-form">
+<div class="group">
+<label for="delay-input">השהייה בין שלבים (מילישניות)</label>
+<input id="delay-input" type="number" min="0" step="100"/>
+</div>
+<div class="group">
+<label for="voice-select">קול הקראה</label>
+<select id="voice-select">
+<option value="">ברירת מחדל</option>
+</select>
+</div>
+<div class="group">
+<label for="rate-input">מהירות קריאה (0.5-2)</label>
+<input id="rate-input" type="number" min="0.5" max="2" step="0.1" value="0.9"/>
+</div>
+<div class="group">
+<label for="theme-select">ערכת נושא</label>
+<select id="theme-select">
+<option value="light">בהיר</option>
+<option value="dark">כהה</option>
+</select>
+</div>
+<button class="btn" type="submit">שמור הגדרות</button>
+<p id="settings-msg" class="success" style="display:none"></p>
+</form>
+<div class="footer">
+<a href="javascript:history.back()">חזרה</a>
+</div>
+</div>
+<script>
+function loadVoices() {
+  const voices = window.speechSynthesis.getVoices();
+  const select = document.getElementById("voice-select");
+  select.innerHTML = '<option value="">ברירת מחדל</option>';
+  voices.forEach(v => {
+    const opt = document.createElement("option");
+    opt.value = v.name;
+    opt.textContent = `${v.name} (${v.lang})`;
+    select.appendChild(opt);
+  });
+  const user = JSON.parse(localStorage.getItem('rv_current_user_v1'));
+  if(user?.settings?.voice) select.value = user.settings.voice;
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+document.getElementById("settings-form").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const delay = document.getElementById("delay-input").value;
+  const voice = document.getElementById("voice-select").value;
+  const theme = document.getElementById("theme-select").value;
+  const msg = document.getElementById("settings-msg");
+  
+  const user = JSON.parse(localStorage.getItem('rv_current_user_v1'));
+  if(!user){
+    location.href = "login.html";
+    return;
+  }
+  
+  const rate = document.getElementById("rate-input").value;
+  user.settings = {delayTime: Number(delay), voice, rate: Number(rate), theme};
+  
+  const users = JSON.parse(localStorage.getItem('rv_users_v1') || '[]');
+  const idx = users.findIndex(u => u.id === user.id);
+  if(idx >= 0){
+    users[idx] = user;
+    localStorage.setItem('rv_users_v1', JSON.stringify(users));
+  }
+  localStorage.setItem('rv_current_user_v1', JSON.stringify(user));
+  
+  msg.textContent = "ההגדרות נשמרו בהצלחה!";
+  msg.style.display = 'block';
+  setTimeout(()=> {
+    msg.style.display = 'none';
+    history.back();
+  }, 2000);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const user = JSON.parse(localStorage.getItem('rv_current_user_v1'));
+  if(user && user.settings){
+    document.getElementById("delay-input").value = user.settings.delayTime || 900;
+    document.getElementById("rate-input").value = user.settings.rate || 0.9;
+    document.getElementById("theme-select").value = user.settings.theme || "light";
+    setTimeout(() => {
+      document.getElementById("voice-select").value = user.settings.voice || "";
+    }, 100);
+  }
+});
+</script>
+
+</body>
+</html>

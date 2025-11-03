@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>מתכונים - ספר הבישול הדיגיטלי</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="toolbar">
+    <div class="toolbar-content">
+      <h1> המתכונים שלי</h1>
+      <nav>
+        <button id="add-recipe-btn" class="btn primary">
+          <span class="btn-icon">+</span>
+          הוספת מתכון
+        </button>
+        <a href="#" id="logout-link" class="btn outline">התנתקות</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="search-bar">
+      <div class="search-wrapper">
+        <input type="search" id="search-input" placeholder="חיפוש מתכונים...">
+        <span class="search-icon">🔍</span>
+      </div>
+    </div>
+
+    <section id="recipes-list" class="recipes-grid"></section>
+
+    <div id="add-form" class="modal-form hidden">
+      <div class="modal-content">
+        <h3 class="form-title"> הוספת מתכון חדש</h3>
+        <div class="form-grid">
+          <div class="form-section">
+            <div class="input-group">
+              <label for="new-title">שם המתכון</label>
+              <input id="new-title" placeholder="למשל: פנקייקים פשוטים" />
+            </div>
+            <div class="input-group">
+              <label for="new-image-file">תמונת המתכון</label>
+              <div class="file-input-wrapper">
+                <input id="new-image-file" type="file" accept="image/*" />
+                <img id="new-image-preview" class="image-preview hidden" alt="תצוגה מקדימה">
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="input-group">
+              <label for="new-ingredients">מרכיבים</label>
+              <textarea id="new-ingredients" placeholder="כוס קמח&#10;ביצה אחת&#10;כוס חלב"></textarea>
+              <span class="input-hint">מרכיב אחד בכל שורה</span>
+            </div>
+            <div class="input-group">
+              <label for="new-instructions">הוראות הכנה</label>
+              <textarea id="new-instructions" placeholder="ערבבו את המרכיבים היבשים&#10;הוסיפו ביצה וחלב&#10;חממו מחבת"></textarea>
+              <span class="input-hint">שלב אחד בכל שורה</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button id="save-recipe-btn" class="btn success">שמירת המתכון</button>
+          <button id="cancel-add-btn" class="btn outline">ביטול</button>
+        </div>
+        <p id="add-error" class="error"></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/data-manager.js"></script>
+  <script src="js/recipes-app.js"></script>
+</body>
+</html>
